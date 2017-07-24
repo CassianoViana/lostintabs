@@ -6,14 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="jquery.js"></script>
-    <script src="pages.js"></script>
+    <script src="angular.js"></script>
     <title>Document</title>
 </head>
 
-<body>
+<body ng-controller="pagesCtrl">
     <h1>Lost in tabs</h1>
+    <button ng-click="loadPages()">load</button>
     <h6>Click on 'X' to close or at one link to open it</h6>
-    <ul id="tabsList">
-    </ul>
+    <div>
+        {{tabs.length}}
+        <ul ng-repeat="tab in tabs">
+            <li>{{tab.url}}</li>
+        </ul>
+    </div>
+    <script src="pages.js"></script>
 </body>
 </html>

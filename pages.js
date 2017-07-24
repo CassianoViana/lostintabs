@@ -1,17 +1,3 @@
-function buildTabsList() {
-    
-    var tabsList = $("#tabsList");
-
-    getCurrentTabs(function (tabs) {
-        console.log(tabs);
-        tabs.forEach(function (tab) {
-            console.log(tab);
-            var btnRemover = '<button class="btnRemove" data-tab-id="' + tab.id + '">x</button>'
-            tabsList.append('<li class="liTab" data-tab-id="' + tab.id + '">' + btnRemover + ' ' + tab.url + '</li>');
-        })
-    })
-}
-
 function moveExtensionTabToStart() {
     chrome.tabs.getCurrent(function (tab) {
         chrome.tabs.move(tab.id, { index: 0 })
@@ -35,19 +21,38 @@ function defineEventOpenTabOnClickLine() {
     })
 }
 
-function getCurrentTabs(callback) {
-    var queryInfo = {};
-    chrome.tabs.query(queryInfo, function (tabs) {
-        callback(tabs);
-    });
-}
+var app = angular.module("lostInTabs", []);
 
 $(document).ready(function () {
-
-    buildTabsList();
-
     moveExtensionTabToStart();
     defineEventRemoveLineOnClickX();
     defineEventOpenTabOnClickLine();
-
+    angular.bootstrap(document, ['lostInTabs']);
 });
+
+app.factory("pagesService", function ($q) {
+
+    function getPages() {
+        var deferred = $q.defer();
+        chrome.tabs.query({}, function (tabs) {
+            angular.bootstrap(document, ['lostInTabs']);
+            deferred.resolve(tabs);
+        });
+        return deferred.promise;
+    };
+
+    return  {
+        getPages: getPages
+    };
+})
+
+app.controller("pagesCtrl", function ($scope, pagesService) {
+    $scope.loadPages = function () {
+        pagesService.getPages().then(function (tabs) {
+            console.log(tabs);
+            console.log(tabs.length)
+            alert(tabs.length)
+            $scope.tabs = tabs;
+        });
+    }
+})
