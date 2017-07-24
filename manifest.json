@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "Lost in tabs",
+  "description": "This extensios is for those that open many tabs and figureout yourself lost",
   "version": "1.0",
 
   "content_scripts": [

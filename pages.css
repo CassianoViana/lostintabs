@@ -1,0 +1,25 @@
+.selected{
+    background: rgb(255, 123, 123);
+}
+
+button[data-tab-id]{
+    background: transparent;
+    border: none;
+    color: blue;
+    font-size: 12pt;
+}
+
+.twocolumns{
+    columns: 2;
+}
+
+ul{
+    list-style:none;
+    padding-left: 10px;
+}
+
+li[data-tab-id]{
+    padding: 3px;
+    font-size: 12pt;
+    border-radius: 3px;
+}
