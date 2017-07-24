@@ -23,3 +23,15 @@ li[data-tab-id]{
     font-size: 12pt;
     border-radius: 3px;
 }
+
+#search{
+    position: fixed;
+    top: 20%;
+    left: 10%;
+    width: 80%;
+    font-size: 30pt;
+    padding: 10px;
+    box-shadow: 5px 5px 50px rgba(0,0,0, 0.6);
+    border: none;
+    border-radius: 3px;
+}

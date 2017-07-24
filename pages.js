@@ -31,6 +31,17 @@ var V = function () {
 
     var getTabsList = function () { return $("#tabsList") };
 
+    var createLi = function (tab, i) {
+        var btnRemover = '<button class="btnRemove" data-tab-id="' + tab.id + '">x</button>'
+        var nrIndicator = createNrIndicator(i);
+        var li = '<li class="liTab" data-tab-id="' + tab.id + '">' + nrIndicator + btnRemover + ' ' + tab.title + '</li>';
+        return li;
+    }
+
+    var createNrIndicator = function (i) {
+        return '<span class="indexIndicator">' + (i <= 9 ? i : '') + '</span>'
+    }
+
     return {
         activeTab: function (id) {
             chrome.tabs.update(id, { selected: true });
@@ -40,9 +51,9 @@ var V = function () {
         },
         buildTabsList: function (tabs) {
             getTabsList().empty();
-            tabs.forEach(function (tab) {
-                var btnRemover = '<button class="btnRemove" data-tab-id="' + tab.id + '">x</button>'
-                getTabsList().append('<li class="liTab" data-tab-id="' + tab.id + '">' + btnRemover + ' ' + tab.title + '</li>');
+            tabs.forEach(function (tab, i) {
+                var li = createLi(tab, i);
+                getTabsList().append(li);
             })
         },
         higlightTab: function (id) {
@@ -68,11 +79,17 @@ var V = function () {
             next.addClass('selected');
         },
         ajustColumns: function () {
-            if($('li').length > MAX_TABS){
+            if ($('li').length > MAX_TABS) {
                 $("ul").addClass('twocolumns')
-            }else{
+            } else {
                 $("ul").removeClass('twocolumns')
             }
+        },
+        ajustIndexes: function () {
+            $('li.liTab').each(function (i, li) {
+                var nrIndicator = createNrIndicator(i);
+                $(li).find('.indexIndicator').replaceWith(nrIndicator);
+            });
         }
     }
 }();
@@ -120,6 +137,7 @@ var C = function () {
                 M.removeTab(id);
                 V.removeTab(id);
                 V.ajustColumns();
+                V.ajustIndexes();
             })
         },
         activeTab: function (id) {
@@ -135,7 +153,7 @@ var C = function () {
 }();
 
 var Events = function () {
-    $(window).focus(function() {
+    $(window).focus(function () {
         C.buildTabsList();
         C.highlightSelectedTab();
     });
@@ -146,6 +164,20 @@ var Events = function () {
         C.removeTab(tabId);
     });
 
+    $(document).on('keypress', function (e) {
+        if (!$(e.target).is('input')) {
+            if (e.keyCode >= 48 && e.keyCode <= 57) {
+                M.getCurrentTabs(function (tabs) {
+                    var target = tabs.filter(function (tab) { return tab.index == e.key });
+                    if (target && target[0]) {
+                        var id = target[0].id
+                        C.activeTab(id);
+                    }
+                })
+            }
+        }
+    });
+
     $(document).on('click', '.liTab', function (e) {
         var li = $(e.target);
         if (!li.is('li')) return;
@@ -154,25 +186,49 @@ var Events = function () {
     });
 
     $(document).keydown(function (e) {
-        switch (e.which) {
-            case 38: // up
-                C.highlightUp();
-                break;
-            case 40: // down
-                C.highlightDown();
-                break;
-            case 46: // delete
-                C.deleteSelected();
-                break;
-            case 13: // enter
-                C.activeTab();
-            default: return;
+        if (!$(e.target).is('input')) {
+            // ctrl + k
+            if(e.ctrlKey && e.keyCode == 75) {
+                $("#search").show().select().focus();
+            }
+        }else{
+            // esc
+            if(e.keyCode == 27){
+                $("#search").hide().blur();
+            }
         }
-        e.preventDefault();
     });
-}();
+
+    $(document).keydown(function (e) {
+        if (!$(e.target).is('input')) {
+            switch (e.which) {
+                case 38: // up
+                    C.highlightUp();
+                    break;
+                case 40: // down
+                    C.highlightDown();
+                    break;
+                case 46: // delete
+                    C.deleteSelected();
+                    break;
+                case 13: // enter
+                    C.activeTab();
+                default: return;
+            }
+            e.preventDefault();
+        }
+    });
+
+    $("#search").keydown(function (e) {
+        if (e.which == 13) {
+            window.open('https://www.google.com.br/search?q=' + $(this).val())
+            $("#search").hide();
+        }
+    })
+};
 
 $(document).ready(function () {
+    Events();
     C.buildTabsList();
     C.moveExtensionTabToStart();
     C.highlightSelectedTab();
