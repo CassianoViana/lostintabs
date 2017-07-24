@@ -42,7 +42,7 @@ var V = function () {
             getTabsList().empty();
             tabs.forEach(function (tab) {
                 var btnRemover = '<button class="btnRemove" data-tab-id="' + tab.id + '">x</button>'
-                getTabsList().append('<li class="liTab" data-tab-id="' + tab.id + '">' + btnRemover + ' ' + tab.url + '</li>');
+                getTabsList().append('<li class="liTab" data-tab-id="' + tab.id + '">' + btnRemover + ' ' + tab.title + '</li>');
             })
         },
         higlightTab: function (id) {
