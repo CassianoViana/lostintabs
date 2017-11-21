@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="jquery.js"></script>
+    <script src="clock.js"></script>
     <script src="pages.js"></script>
     <link rel="stylesheet" href="pages.css">
     <title>Lost in tabs</title>
@@ -19,6 +20,14 @@
      </h4>
     <ul id="tabsList">
     </ul>
-    <input id="search" style="display: none;" type="text" autofocus placeholder="Google here">
+    <span id="clock">Clock</span>
+    <textarea placeholder="Lembretes (não ficam gravados!)"  
+            style="
+                position:fixed;
+                height: 100%;
+                right: 0;
+                top: 0;
+                font-size: 15px;"
+            rows="40;" cols=30></textarea>
 </body>
 </html>

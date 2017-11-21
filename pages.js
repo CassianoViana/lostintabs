@@ -1,5 +1,7 @@
 var MAX_TABS = 19;
 
+'use strict';
+
 var M = function () {
 
     var selectedId = 0;
@@ -14,7 +16,9 @@ var M = function () {
             });
         },
         getCurrentTabs: function (callback) {
-            var queryInfo = {};
+            var queryInfo = {
+                currentWindow: true
+            };
             chrome.tabs.query(queryInfo, function (tabs) {
                 callback(tabs);
             });
@@ -34,7 +38,7 @@ var V = function () {
     var createLi = function (tab, i) {
         var btnRemover = '<button class="btnRemove" data-tab-id="' + tab.id + '">x</button>'
         var nrIndicator = createNrIndicator(i);
-        var li = '<li class="liTab" data-tab-id="' + tab.id + '">' + nrIndicator + btnRemover + ' ' + tab.title + '</li>';
+        var li = '<li class="liTab" data-tab-id="' + tab.id + '">' + nrIndicator + btnRemover + ' ' + tab.title.substring(0, 75) + ' <span data-url>'+ tab.url.substring(0, 75) +'</span></li>';
         return li;
     }
 
@@ -155,7 +159,7 @@ var C = function () {
 var Events = function () {
     $(window).focus(function () {
         C.buildTabsList();
-        C.highlightSelectedTab();
+        // C.highlightSelectedTab();
     });
 
     $(document).on('click', '.btnRemove', function (e) {
@@ -189,18 +193,13 @@ var Events = function () {
         if (!$(e.target).is('input')) {
             // ctrl + k
             if(e.ctrlKey && e.keyCode == 75) {
-                $("#search").show().select().focus();
-            }
-        }else{
-            // esc
-            if(e.keyCode == 27){
-                $("#search").hide().blur();
+                window.open('https://www.google.com.br/');       
             }
         }
     });
 
     $(document).keydown(function (e) {
-        if (!$(e.target).is('input')) {
+        if (!$(e.target).is('textarea')) {
             switch (e.which) {
                 case 38: // up
                     C.highlightUp();
@@ -218,13 +217,6 @@ var Events = function () {
             e.preventDefault();
         }
     });
-
-    $("#search").keydown(function (e) {
-        if (e.which == 13) {
-            window.open('https://www.google.com.br/search?q=' + $(this).val())
-            $("#search").hide();
-        }
-    })
 };
 
 $(document).ready(function () {

@@ -8,7 +8,7 @@
   "content_scripts": [
     {
       "matches": ["http://www.google.com/*"],
-      "js": ["jquery.js"]
+      "js": ["jquery.js", "index.js"]
     }
   ],
 
@@ -20,5 +20,6 @@
     "activeTab",
     "tabs",
     "https://ajax.googleapis.com/"
-  ]
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
